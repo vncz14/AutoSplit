@@ -174,12 +174,23 @@ def __pop_image_type(split_image: list[AutoSplitImage], image_type: ImageType):
     return None
 
 
-def parse_and_validate_images(autosplit: AutoSplit):
+def parse_and_validate_images(autosplit: AutoSplit, dir: str | None = None):
+
+
+
+
+    # default argument is split image directory
+    image_dir = dir or autosplit.settings_dict["split_image_directory"]
+
+
+
+
+
     # Get split images
     all_images = [
-        AutoSplitImage(os.path.join(autosplit.settings_dict["split_image_directory"], image_name))
+        AutoSplitImage(os.path.join(image_dir, image_name))
         for image_name
-        in os.listdir(autosplit.settings_dict["split_image_directory"])
+        in os.listdir(image_dir)
     ]
 
     # Find non-split images and then remove them from the list
@@ -245,5 +256,20 @@ def parse_and_validate_images(autosplit: AutoSplit):
 
     autosplit.start_image = start_image
     autosplit.reset_image = reset_image
-    autosplit.split_images = split_images
+
+
+
+
+
+
+    if dir is autosplit.settings_dict["windtracker_image_directory"]:
+        autosplit.windtracker_images = split_images
+    else:
+        autosplit.split_images = split_images
+
+
+
+
+
+
     return True

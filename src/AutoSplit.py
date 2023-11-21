@@ -116,6 +116,13 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         self.start_image: AutoSplitImage | None = None
         self.reset_image: AutoSplitImage | None = None
         self.split_images: list[AutoSplitImage] = []
+
+
+
+        self.windtracker_images: list[AutoSplitImage] = []
+
+
+
         self.split_image: AutoSplitImage | None = None
         self.update_auto_control: AutoControlledThread | None = None
 
@@ -506,6 +513,12 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         return False
 
     def __auto_splitter(self):  # noqa: PLR0912,PLR0915
+
+
+        print(self.settings_dict["windtracker_mode"])
+        print(self.settings_dict["windtracker_image_directory"])
+
+
         if not self.settings_dict["split_hotkey"] and not self.is_auto_controlled:
             self.gui_changes_on_reset(True)
             error_messages.split_hotkey()
@@ -514,11 +527,19 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         # Set start time before parsing the images as it's a heavy operation that will cause delays
         self.run_start_time = time()
 
-        if not (validate_before_parsing(self) and parse_and_validate_images(self)):
+        if (not (validate_before_parsing(self) and parse_and_validate_images(self))):
             # `safe_to_reload_start_image: bool = False` becasue __load_start_image also does this check,
             # we don't want to double a Start/Reset Image error message
             self.gui_changes_on_reset(False)
             return
+
+        if self.settings_dict["windtracker_mode"]:
+            if not parse_and_validate_images(self, self.settings_dict["windtracker_image_directory"]):
+                # `safe_to_reload_start_image: bool = False` becasue __load_start_image also does this check,
+                # we don't want to double a Start/Reset Image error message
+                self.gui_changes_on_reset(False)
+                return
+
 
         # Construct a list of images + loop count tuples.
         self.split_images_and_loop_number = list(
@@ -684,6 +705,28 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
                 elif below_flag and self.split_below_threshold and is_valid_image(capture):
                     self.split_below_threshold = False
                     break
+
+
+
+
+                # elif self.settings_dict["windtracker_mode"]:
+
+                #     # for every image in the wind folder, check similarity. if its enough, then return the image file name
+                #     # possible optimization: first check colors for speed, then check arrow direction for direction
+
+                #     similarity_array = []
+
+                #     for wind_image in self.windtracker_images:
+
+                #         similarity_array.append(wind_image.compare_with_capture(self, capture))
+
+                #     print(self.windtracker_images[similarity_array.index(max(similarity_array))].filename)
+
+
+
+
+
+
 
             QTest.qWait(wait_delta_ms)
 

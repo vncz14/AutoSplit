@@ -36,6 +36,14 @@ class UserProfileDict(TypedDict):
     loop_splits: bool
     start_also_resets: bool
     enable_auto_reset: bool
+
+
+
+    windtracker_mode: bool
+    windtracker_image_directory: str
+
+
+
     split_image_directory: str
     screenshot_directory: str
     open_screenshot: bool
@@ -68,6 +76,10 @@ DEFAULT_PROFILE = UserProfileDict(
     open_screenshot=True,
     captured_window_title="",
     capture_region=Region(x=0, y=0, width=1, height=1),
+
+    windtracker_mode = True,
+    windtracker_image_directory = "",
+
 )
 
 
@@ -132,6 +144,8 @@ def __load_settings_from_file(autosplit: AutoSplit, load_settings_file_path: str
             autosplit.width_spinbox.setValue(autosplit.settings_dict["capture_region"]["width"])
             autosplit.height_spinbox.setValue(autosplit.settings_dict["capture_region"]["height"])
             autosplit.split_image_folder_input.setText(autosplit.settings_dict["split_image_directory"])
+
+
     except (FileNotFoundError, MemoryError, TypeError, toml.TomlDecodeError):
         autosplit.show_error_signal.emit(error_messages.invalid_settings)
         return False

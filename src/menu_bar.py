@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import asyncio
 import webbrowser
 from typing import TYPE_CHECKING, Any, cast
@@ -24,7 +25,8 @@ from capture_method import (
 )
 from gen import about, design, settings as settings_ui, update_checker
 from hotkeys import HOTKEYS, Hotkey, set_hotkey
-from utils import AUTOSPLIT_VERSION, GITHUB_REPOSITORY, decimal, fire_and_forget
+from utils import AUTOSPLIT_VERSION, GITHUB_REPOSITORY, decimal, fire_and_forget, auto_split_directory
+
 
 if TYPE_CHECKING:
     from AutoSplit import AutoSplit
@@ -275,6 +277,21 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         )
         self.screenshot_directory_input.setText(self.autosplit.settings_dict["screenshot_directory"])
 
+    def __select_windtracker_image_directory(self):
+        # User selects the file with the split images in it.
+        new_directory = QFileDialog.getExistingDirectory(
+            self,
+            "Select windtracker Image Directory",
+            os.path.join(self.autosplit.settings_dict["windtracker_image_directory"]
+                         or auto_split_directory, ".."),
+        )
+
+        # If the user doesn't select a folder, it defaults to "".
+        if new_directory:
+            # set the split image folder line to the directory text
+            self.autosplit.settings_dict["windtracker_image_directory"] = new_directory
+            self.windtracker_image_folder_input.setText(f"{new_directory}/")
+
     def __setup_bindings(self):
         # Hotkey initial values and bindings
         def hotkey_connect(hotkey: Hotkey):
@@ -306,6 +323,17 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         # It'll set itself asynchronously in self.__set_all_capture_devices()
         self.screenshot_directory_input.setText(self.autosplit.settings_dict["screenshot_directory"])
         self.open_screenshot_checkbox.setChecked(self.autosplit.settings_dict["open_screenshot"])
+
+
+
+
+        #windtracker settings
+        self.windtracker_mode_checkbox.setChecked(self.autosplit.settings_dict["windtracker_mode"])
+        self.windtracker_image_folder_input.setText(self.autosplit.settings_dict["windtracker_image_directory"])
+        self.windtracker_image_folder_button.clicked.connect(self.__select_windtracker_image_directory)
+
+
+
 
         # Image Settings
         self.default_comparison_method_combobox.setCurrentIndex(
@@ -357,6 +385,17 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         self.enable_auto_reset_image_checkbox.stateChanged.connect(
             lambda: self.__set_value("enable_auto_reset", self.enable_auto_reset_image_checkbox.isChecked()),
         )
+
+
+
+
+
+
+
+
+
+
+
 # endregion
 
 
@@ -391,6 +430,12 @@ def get_default_settings_from_ui(autosplit: AutoSplit):
         "loop_splits": default_settings_dialog.loop_splits_checkbox.isChecked(),
         "start_also_resets": default_settings_dialog.start_also_resets_checkbox.isChecked(),
         "enable_auto_reset": default_settings_dialog.enable_auto_reset_image_checkbox.isChecked(),
+
+
+        "windtracker_mode": default_settings_dialog.windtracker_mode_checkbox.isChecked(),
+        "windtracker_image_directory": default_settings_dialog.windtracker_image_folder_input.text(),
+
+
         "split_image_directory": autosplit.split_image_folder_input.text(),
         "screenshot_directory": default_settings_dialog.screenshot_directory_input.text(),
         "open_screenshot": default_settings_dialog.open_screenshot_checkbox.isChecked(),
