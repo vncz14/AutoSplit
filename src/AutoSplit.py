@@ -515,10 +515,6 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
     def __auto_splitter(self):  # noqa: PLR0912,PLR0915
 
 
-        print(self.settings_dict["windtracker_mode"])
-        print(self.settings_dict["windtracker_image_directory"])
-
-
         if not self.settings_dict["split_hotkey"] and not self.is_auto_controlled:
             self.gui_changes_on_reset(True)
             error_messages.split_hotkey()
@@ -656,6 +652,7 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
 
         start = time()
         while True:
+
             capture, _ = self.__get_capture_for_comparison()
 
             if self.__reset_if_should(capture):
@@ -709,18 +706,25 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
 
 
 
-                # elif self.settings_dict["windtracker_mode"]:
+                elif self.settings_dict["windtracker_mode"]:
 
-                #     # for every image in the wind folder, check similarity. if its enough, then return the image file name
-                #     # possible optimization: first check colors for speed, then check arrow direction for direction
+                    # for every image in the wind folder, check similarity. if its enough, then return the image file name
+                    # possible optimization: first check colors for speed, then check arrow direction for direction
 
-                #     similarity_array = []
+                    similarity_array = [None for i in range(len(self.windtracker_images))]
 
-                #     for wind_image in self.windtracker_images:
+                    for wind_image in self.windtracker_images:
 
-                #         similarity_array.append(wind_image.compare_with_capture(self, capture))
 
-                #     print(self.windtracker_images[similarity_array.index(max(similarity_array))].filename)
+                        #extract numbers from file name
+                        wind_image_number = int(''.join(filter(str.isdigit, wind_image.filename)))
+                        similarity_array[wind_image_number] = wind_image.compare_with_capture(self, capture)
+
+
+                    # print(f'{similarity_array.index(max(similarity_array))}, {round(max(similarity_array), 3)}', [round(num, 3) for num in similarity_array],)
+
+                    #print '?' if all 0s, else index of max value
+                    print('?') if max(similarity_array) == 0 else print(similarity_array.index(max(similarity_array)))
 
 
 
