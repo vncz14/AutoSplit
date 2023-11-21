@@ -327,6 +327,8 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
 
 
 
+        print(self.autosplit.settings_dict["windtracker_mode"])
+
         #windtracker settings
         self.windtracker_mode_checkbox.setChecked(self.autosplit.settings_dict["windtracker_mode"])
         self.windtracker_image_folder_input.setText(self.autosplit.settings_dict["windtracker_image_directory"])
@@ -387,6 +389,10 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         )
 
 
+        #windtracker!!!
+        self.windtracker_mode_checkbox.stateChanged.connect(
+            lambda: self.__set_value("windtracker_mode", self.windtracker_mode_checkbox.isChecked()),
+        )
 
 
 

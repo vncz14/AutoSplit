@@ -71,14 +71,19 @@ DEFAULT_PROFILE = UserProfileDict(
     loop_splits=False,
     start_also_resets=False,
     enable_auto_reset=True,
+
+
+
+    windtracker_mode = True,
+    windtracker_image_directory = "",
+
+
+
     split_image_directory="",
     screenshot_directory="",
     open_screenshot=True,
     captured_window_title="",
     capture_region=Region(x=0, y=0, width=1, height=1),
-
-    windtracker_mode = True,
-    windtracker_image_directory = "",
 
 )
 
