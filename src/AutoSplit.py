@@ -100,6 +100,13 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         self.capture_method = CaptureMethodBase(None)
         self.is_running = False
 
+
+
+        self.found_wind = False
+
+
+
+
         # Last loaded settings empty and last successful loaded settings file path to None until we try to load them
         self.last_loaded_settings = DEFAULT_PROFILE
         self.last_successfully_loaded_settings_file_path: str | None = None
@@ -119,7 +126,8 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
 
 
 
-        self.windtracker_images: list[AutoSplitImage] = []
+        self.windtracker_speed_images: list[AutoSplitImage] = []
+        self.windtracker_direction_images: list[AutoSplitImage] = []
 
 
 
@@ -492,6 +500,12 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         """
         self.is_running = False
 
+
+
+
+
+        self.found_wind = False
+
     # Functions for the hotkeys to return to the main thread from signals and start their corresponding functions
     def start_auto_splitter(self):
         # If the auto splitter is already running or the button is disabled, don't emit the signal to start it.
@@ -530,7 +544,12 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
             return
 
         if self.settings_dict["windtracker_mode"]:
-            if not parse_and_validate_images(self, self.settings_dict["windtracker_image_directory"]):
+            if not parse_and_validate_images(self, self.settings_dict["windtracker_speed_image_directory"]):
+                # `safe_to_reload_start_image: bool = False` becasue __load_start_image also does this check,
+                # we don't want to double a Start/Reset Image error message
+                self.gui_changes_on_reset(False)
+                return
+            if not parse_and_validate_images(self, self.settings_dict["windtracker_direction_image_directory"]):
                 # `safe_to_reload_start_image: bool = False` becasue __load_start_image also does this check,
                 # we don't want to double a Start/Reset Image error message
                 self.gui_changes_on_reset(False)
@@ -630,11 +649,22 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
             else:
                 self.split_image_number += 1
 
+
+            self.found_wind = False
+
+
+
             # If its not the last split image, pause for the amount set by the user
             # A pause loop to check if the user presses skip split, undo split, or reset here.
             # Also updates the current split image text, counting down the time until the next split image
             if self.__pause_loop(self.split_image.get_pause_time(self), "None (Paused)."):
                 return
+
+
+
+
+
+
 
         # loop breaks to here when the last image splits
         self.is_running = False
@@ -706,26 +736,60 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
 
 
 
-                elif self.settings_dict["windtracker_mode"]:
+                elif self.settings_dict["windtracker_mode"] and not self.found_wind:
 
                     # for every image in the wind folder, check similarity. if its enough, then return the image file name
                     # possible optimization: first check colors for speed, then check arrow direction for direction
 
-                    similarity_array = [None for i in range(len(self.windtracker_images))]
+                    speed_similarity_array = [None for _ in range(len(self.windtracker_speed_images))]
 
-                    for wind_image in self.windtracker_images:
+                    for speed_image in self.windtracker_speed_images:
 
 
                         #extract numbers from file name
-                        wind_image_number = int(''.join(filter(str.isdigit, wind_image.filename)))
-                        similarity_array[wind_image_number] = wind_image.compare_with_capture(self, capture)
+                        wind_image_number = int(''.join(filter(str.isdigit, speed_image.filename)))
+
+                        speed_similarity_array[wind_image_number] = speed_image.compare_with_capture(self, capture)
 
 
-                    # print(f'{similarity_array.index(max(similarity_array))}, {round(max(similarity_array), 3)}', [round(num, 3) for num in similarity_array],)
 
-                    #print '?' if all 0s, else index of max value
-                    print('?') if max(similarity_array) == 0 else print(similarity_array.index(max(similarity_array)))
 
+                    if max(speed_similarity_array) > 0.08:
+
+                        print(speed_similarity_array)
+
+                        speed = speed_similarity_array.index(max(speed_similarity_array))
+
+                        if speed != 0:
+
+                            direction_similarity_array = []
+
+                            for direction_image in self.windtracker_direction_images:
+
+                                direction_similarity_array.append(direction_image.compare_with_capture(self, capture))
+
+                            print(direction_similarity_array)
+
+                            direction_number = direction_similarity_array.index(max(direction_similarity_array))
+
+                            match direction_number:
+
+                                case 0: direction = "E"
+                                case 1: direction = "N"
+                                case 2: direction = "NE"
+                                case 3: direction = "NW"
+                                case 4: direction = "S"
+                                case 5: direction = "SE"
+                                case 6: direction = "SW"
+                                case 7: direction = "W"
+
+                        else:
+
+                            direction = "?"
+
+                        print(speed, direction)
+
+                        self.found_wind = True
 
 
 

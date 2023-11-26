@@ -262,8 +262,10 @@ def parse_and_validate_images(autosplit: AutoSplit, dir: str | None = None):
 
 
 
-    if dir is autosplit.settings_dict["windtracker_image_directory"]:
-        autosplit.windtracker_images = split_images
+    if dir is autosplit.settings_dict["windtracker_speed_image_directory"]:
+        autosplit.windtracker_speed_images = split_images
+    elif dir is autosplit.settings_dict["windtracker_direction_image_directory"]:
+        autosplit.windtracker_direction_images = split_images
     else:
         autosplit.split_images = split_images
 

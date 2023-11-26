@@ -277,20 +277,30 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         )
         self.screenshot_directory_input.setText(self.autosplit.settings_dict["screenshot_directory"])
 
-    def __select_windtracker_image_directory(self):
+    def __select_windtracker_image_directory(self, dir_type: str):
         # User selects the file with the split images in it.
+
+        if dir_type == "Speed":
+            setting = "windtracker_speed_image_directory"
+        elif dir_type == "Direction":
+            setting = "windtracker_direction_image_directory"
+
         new_directory = QFileDialog.getExistingDirectory(
             self,
-            "Select windtracker Image Directory",
-            os.path.join(self.autosplit.settings_dict["windtracker_image_directory"]
+            f"Select windtracker {dir_type} Image Directory",
+            os.path.join(self.autosplit.settings_dict[setting]
                          or auto_split_directory, ".."),
         )
 
         # If the user doesn't select a folder, it defaults to "".
         if new_directory:
             # set the split image folder line to the directory text
-            self.autosplit.settings_dict["windtracker_image_directory"] = new_directory
-            self.windtracker_image_folder_input.setText(f"{new_directory}/")
+            self.autosplit.settings_dict[setting] = new_directory
+
+            if dir_type == "Speed":
+                self.windtracker_speed_image_folder_input.setText(f"{new_directory}/")
+            elif dir_type == "Direction":
+                self.windtracker_direction_image_folder_input.setText(f"{new_directory}/")
 
     def __setup_bindings(self):
         # Hotkey initial values and bindings
@@ -326,14 +336,17 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
 
 
 
-
-        print(self.autosplit.settings_dict["windtracker_mode"])
-
         #windtracker settings
         self.windtracker_mode_checkbox.setChecked(self.autosplit.settings_dict["windtracker_mode"])
-        self.windtracker_image_folder_input.setText(self.autosplit.settings_dict["windtracker_image_directory"])
-        self.windtracker_image_folder_button.clicked.connect(self.__select_windtracker_image_directory)
 
+        # self.windtracker_image_folder_input.setText(self.autosplit.settings_dict["windtracker_image_directory"])
+        self.windtracker_speed_image_folder_input.setText(self.autosplit.settings_dict["windtracker_speed_image_directory"])
+        self.windtracker_direction_image_folder_input.setText(self.autosplit.settings_dict["windtracker_direction_image_directory"])
+
+
+        # self.windtracker_image_folder_button.clicked.connect(self.__select_windtracker_image_directory)
+        self.windtracker_speed_image_folder_button.clicked.connect(lambda: self.__select_windtracker_image_directory("Speed"))
+        self.windtracker_direction_image_folder_button.clicked.connect(lambda: self.__select_windtracker_image_directory("Direction"))
 
 
 
@@ -439,8 +452,9 @@ def get_default_settings_from_ui(autosplit: AutoSplit):
 
 
         "windtracker_mode": default_settings_dialog.windtracker_mode_checkbox.isChecked(),
-        "windtracker_image_directory": default_settings_dialog.windtracker_image_folder_input.text(),
-
+        # "windtracker_image_directory": default_settings_dialog.windtracker_image_folder_input.text(),
+        "windtracker_speed_image_directory": default_settings_dialog.windtracker_speed_image_folder_input.text(),
+        "windtracker_direction_image_directory": default_settings_dialog.windtracker_direction_image_folder_input.text(),
 
         "split_image_directory": autosplit.split_image_folder_input.text(),
         "screenshot_directory": default_settings_dialog.screenshot_directory_input.text(),
