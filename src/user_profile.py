@@ -40,6 +40,11 @@ class UserProfileDict(TypedDict):
 
 
     windtracker_mode: bool
+
+
+    windtracker_mph: bool
+
+
     windtracker_speed_image_directory: str
     windtracker_direction_image_directory: str
 
@@ -50,6 +55,11 @@ class UserProfileDict(TypedDict):
     open_screenshot: bool
     captured_window_title: str
     capture_region: Region
+
+
+
+    windtracker_region_1: Region
+    windtracker_region_2: Region
 
 
 DEFAULT_PROFILE = UserProfileDict(
@@ -76,6 +86,12 @@ DEFAULT_PROFILE = UserProfileDict(
 
 
     windtracker_mode = True,
+
+
+    windtracker_mph = True,
+
+
+
     # windtracker_image_directory = "",
     windtracker_speed_image_directory = "",
     windtracker_direction_image_directory = "",
@@ -87,6 +103,11 @@ DEFAULT_PROFILE = UserProfileDict(
     open_screenshot=True,
     captured_window_title="",
     capture_region=Region(x=0, y=0, width=1, height=1),
+
+
+
+    windtracker_region_1=Region(x=0, y=0, width=1, height=1),
+    windtracker_region_2=Region(x=0, y=0, width=1, height=1),
 
 )
 
@@ -151,6 +172,28 @@ def __load_settings_from_file(autosplit: AutoSplit, load_settings_file_path: str
             autosplit.y_spinbox.setValue(autosplit.settings_dict["capture_region"]["y"])
             autosplit.width_spinbox.setValue(autosplit.settings_dict["capture_region"]["width"])
             autosplit.height_spinbox.setValue(autosplit.settings_dict["capture_region"]["height"])
+
+
+
+
+
+
+            # autosplit.windtracker_x_spinbox_1.setValue(autosplit.settings_dict["windtracker_region_1"]["x"])
+            # autosplit.windtracker_y_spinbox_1.setValue(autosplit.settings_dict["windtracker_region_1"]["y"])
+            # autosplit.windtracker_width_spinbox_1.setValue(autosplit.settings_dict["windtracker_region_1"]["width"])
+            # autosplit.windtracker_height_spinbox_1.setValue(autosplit.settings_dict["windtracker_region_1"]["height"])
+
+            # autosplit.windtracker_x_spinbox_2.setValue(autosplit.settings_dict["windtracker_region_2"]["x"])
+            # autosplit.windtracker_y_spinbox_2.setValue(autosplit.settings_dict["windtracker_region_2"]["y"])
+            # autosplit.windtracker_width_spinbox_2.setValue(autosplit.settings_dict["windtracker_region_2"]["width"])
+            # autosplit.windtracker_height_spinbox_2.setValue(autosplit.settings_dict["windtracker_region_2"]["height"])
+
+
+
+
+
+
+
             autosplit.split_image_folder_input.setText(autosplit.settings_dict["split_image_directory"])
 
 

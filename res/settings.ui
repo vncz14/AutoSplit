@@ -842,7 +842,7 @@ It is highly recommended to NOT use pHash if you use masked images, or it'll be 
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>0</y>
        <width>161</width>
        <height>20</height>
       </rect>
@@ -855,7 +855,7 @@ It is highly recommended to NOT use pHash if you use masked images, or it'll be 
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>50</y>
+       <y>30</y>
        <width>231</width>
        <height>21</height>
       </rect>
@@ -868,7 +868,7 @@ It is highly recommended to NOT use pHash if you use masked images, or it'll be 
      <property name="geometry">
       <rect>
        <x>199</x>
-       <y>80</y>
+       <y>60</y>
        <width>81</width>
        <height>24</height>
       </rect>
@@ -884,7 +884,7 @@ It is highly recommended to NOT use pHash if you use masked images, or it'll be 
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>60</y>
        <width>181</width>
        <height>22</height>
       </rect>
@@ -897,7 +897,7 @@ It is highly recommended to NOT use pHash if you use masked images, or it'll be 
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>120</y>
+       <y>90</y>
        <width>261</width>
        <height>21</height>
       </rect>
@@ -910,7 +910,7 @@ It is highly recommended to NOT use pHash if you use masked images, or it'll be 
      <property name="geometry">
       <rect>
        <x>199</x>
-       <y>150</y>
+       <y>120</y>
        <width>81</width>
        <height>24</height>
       </rect>
@@ -926,13 +926,368 @@ It is highly recommended to NOT use pHash if you use masked images, or it'll be 
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>150</y>
+       <y>120</y>
        <width>181</width>
        <height>22</height>
       </rect>
      </property>
      <property name="readOnly">
       <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="windtracker_directions_image_folder_label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>150</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Region 1</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="windtracker_directions_image_folder_label_3">
+     <property name="geometry">
+      <rect>
+       <x>140</x>
+       <y>150</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Region 2</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="windtracker_height_spinbox_1">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>235</y>
+       <width>51</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="correctionMode">
+      <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+     <property name="value">
+      <number>480</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="height_label_2">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>215</y>
+       <width>49</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Height</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="windtracker_x_spinbox_1">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>190</y>
+       <width>51</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="buttonSymbols">
+      <enum>QAbstractSpinBox::UpDownArrows</enum>
+     </property>
+     <property name="correctionMode">
+      <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>999999999</number>
+     </property>
+     <property name="singleStep">
+      <number>1</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="width_label_2">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>215</y>
+       <width>49</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Width</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="windtracker_y_spinbox_1">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>190</y>
+       <width>51</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="correctionMode">
+      <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>999999999</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="y_label_2">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>170</y>
+       <width>49</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Y</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="windtracker_width_spinbox_1">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>235</y>
+       <width>51</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="correctionMode">
+      <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+     <property name="value">
+      <number>640</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="x_label_2">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>170</y>
+       <width>49</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>X</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="width_label_4">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>215</y>
+       <width>49</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Width</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="height_label_4">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>215</y>
+       <width>49</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Height</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="windtracker_y_spinbox_2">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>190</y>
+       <width>51</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="correctionMode">
+      <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>999999999</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="windtracker_height_spinbox_2">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>235</y>
+       <width>51</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="correctionMode">
+      <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+     <property name="value">
+      <number>480</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="x_label_4">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>170</y>
+       <width>49</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>X</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="windtracker_width_spinbox_2">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>235</y>
+       <width>51</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="correctionMode">
+      <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+     <property name="value">
+      <number>640</number>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="windtracker_x_spinbox_2">
+     <property name="geometry">
+      <rect>
+       <x>135</x>
+       <y>190</y>
+       <width>51</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="buttonSymbols">
+      <enum>QAbstractSpinBox::UpDownArrows</enum>
+     </property>
+     <property name="correctionMode">
+      <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>999999999</number>
+     </property>
+     <property name="singleStep">
+      <number>1</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="y_label_4">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>170</y>
+       <width>49</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Y</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="windtracker_mph_checkbox">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>0</y>
+       <width>161</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>mph</string>
      </property>
     </widget>
    </widget>

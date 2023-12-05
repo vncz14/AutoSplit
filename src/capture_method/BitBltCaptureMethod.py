@@ -35,8 +35,8 @@ class BitBltCaptureMethod(CaptureMethodBase):
     _render_full_content = False
 
     @override
-    def get_frame(self, autosplit: AutoSplit) -> tuple[MatLike | None, bool]:
-        selection = autosplit.settings_dict["capture_region"]
+    def get_frame(self, autosplit: AutoSplit, region: str = "capture_region") -> tuple[MatLike | None, bool]:
+        selection = autosplit.settings_dict[region]
         hwnd = autosplit.hwnd
         image: MatLike | None = None
 

@@ -25,7 +25,7 @@ from AutoControlledThread import AutoControlledThread
 from AutoSplitImage import START_KEYWORD, AutoSplitImage, ImageType
 from capture_method import CaptureMethodBase, CaptureMethodEnum
 from gen import about, design, settings, update_checker
-from hotkeys import HOTKEYS, after_setting_hotkey, send_command
+from hotkeys import HOTKEYS, after_setting_hotkey, send_command, _send_hotkey
 from menu_bar import (
     about_qt,
     about_qt_for_python,
@@ -738,37 +738,42 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
 
                 elif self.settings_dict["windtracker_mode"] and not self.found_wind:
 
+                    if self.__reset_if_should(capture):
+                        return True
+
                     # for every image in the wind folder, check similarity. if its enough, then return the image file name
                     # possible optimization: first check colors for speed, then check arrow direction for direction
 
-                    speed_similarity_array = [None for _ in range(len(self.windtracker_speed_images))]
+                    capture_1, _ = self.__get_capture_for_comparison("windtracker_region_1")
+                    capture_2, _ = self.__get_capture_for_comparison("windtracker_region_2")
+
+                    # print(capture_1, capture_2)
+
+
+                    speed_similarity_array = []
 
                     for speed_image in self.windtracker_speed_images:
-
-
-                        #extract numbers from file name
-                        wind_image_number = int(''.join(filter(str.isdigit, speed_image.filename)))
-
-                        speed_similarity_array[wind_image_number] = speed_image.compare_with_capture(self, capture)
-
-
+                        speed_similarity_array.append(speed_image.compare_with_capture(self, capture_1))
+                    for speed_image in self.windtracker_speed_images:
+                        speed_similarity_array.append(speed_image.compare_with_capture(self, capture_2))
 
 
                     if max(speed_similarity_array) > 0.08:
 
-                        print(speed_similarity_array)
 
-                        speed = speed_similarity_array.index(max(speed_similarity_array))
+                        speed = speed_similarity_array.index(max(speed_similarity_array)) % 16
 
                         if speed != 0:
 
                             direction_similarity_array = []
 
+
+                            capture = capture_1 if speed_similarity_array.index(max(speed_similarity_array)) < 16 else capture_2
+
                             for direction_image in self.windtracker_direction_images:
 
                                 direction_similarity_array.append(direction_image.compare_with_capture(self, capture))
 
-                            print(direction_similarity_array)
 
                             direction_number = direction_similarity_array.index(max(direction_similarity_array))
 
@@ -787,7 +792,17 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
 
                             direction = "?"
 
-                        print(speed, direction)
+
+                        if self.settings_dict["windtracker_mph"]:
+                            speed *= 2
+
+
+                        # tuple containing the characters of speed and direction, then enter
+                        for char in f"{speed}{direction}":
+                            _send_hotkey(char)
+                        _send_hotkey("enter")
+
+
 
                         self.found_wind = True
 
@@ -888,9 +903,9 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         if safe_to_reload_start_image:
             self.load_start_image_signal.emit(False, False)
 
-    def __get_capture_for_comparison(self):
+    def __get_capture_for_comparison(self, region: str = "capture_region"):
         """Grab capture region and resize for comparison."""
-        capture, is_old_image = self.capture_method.get_frame(self)
+        capture, is_old_image = self.capture_method.get_frame(self, region)
 
         # This most likely means we lost capture
         # (ie the captured window was closed, crashed, lost capture device, etc.)

@@ -338,6 +338,9 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
 
         #windtracker settings
         self.windtracker_mode_checkbox.setChecked(self.autosplit.settings_dict["windtracker_mode"])
+        self.windtracker_mph_checkbox.setChecked(self.autosplit.settings_dict["windtracker_mph"])
+
+
 
         # self.windtracker_image_folder_input.setText(self.autosplit.settings_dict["windtracker_image_directory"])
         self.windtracker_speed_image_folder_input.setText(self.autosplit.settings_dict["windtracker_speed_image_directory"])
@@ -347,6 +350,18 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         # self.windtracker_image_folder_button.clicked.connect(self.__select_windtracker_image_directory)
         self.windtracker_speed_image_folder_button.clicked.connect(lambda: self.__select_windtracker_image_directory("Speed"))
         self.windtracker_direction_image_folder_button.clicked.connect(lambda: self.__select_windtracker_image_directory("Direction"))
+
+
+
+        self.windtracker_x_spinbox_1.setValue(self.autosplit.settings_dict["windtracker_region_1"]["x"])
+        self.windtracker_y_spinbox_1.setValue(self.autosplit.settings_dict["windtracker_region_1"]["y"])
+        self.windtracker_width_spinbox_1.setValue(self.autosplit.settings_dict["windtracker_region_1"]["width"])
+        self.windtracker_height_spinbox_1.setValue(self.autosplit.settings_dict["windtracker_region_1"]["height"])
+
+        self.windtracker_x_spinbox_2.setValue(self.autosplit.settings_dict["windtracker_region_2"]["x"])
+        self.windtracker_y_spinbox_2.setValue(self.autosplit.settings_dict["windtracker_region_2"]["y"])
+        self.windtracker_width_spinbox_2.setValue(self.autosplit.settings_dict["windtracker_region_2"]["width"])
+        self.windtracker_height_spinbox_2.setValue(self.autosplit.settings_dict["windtracker_region_2"]["height"])
 
 
 
@@ -360,6 +375,8 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         self.loop_splits_checkbox.setChecked(self.autosplit.settings_dict["loop_splits"])
         self.start_also_resets_checkbox.setChecked(self.autosplit.settings_dict["start_also_resets"])
         self.enable_auto_reset_image_checkbox.setChecked(self.autosplit.settings_dict["enable_auto_reset"])
+
+
 # endregion
 # region Binding
         # Capture Settings
@@ -407,6 +424,94 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
             lambda: self.__set_value("windtracker_mode", self.windtracker_mode_checkbox.isChecked()),
         )
 
+        self.windtracker_mph_checkbox.stateChanged.connect(
+            lambda: self.__set_value("windtracker_mph", self.windtracker_mph_checkbox.isChecked()),
+        )
+
+
+
+
+
+
+
+
+
+        self.windtracker_x_spinbox_1.valueChanged.connect(
+            lambda: self.__set_value("windtracker_region_1", {
+                "x": self.windtracker_x_spinbox_1.value(),
+                "y": self.windtracker_y_spinbox_1.value(),
+                "width": self.windtracker_width_spinbox_1.value(),
+                "height": self.windtracker_height_spinbox_1.value(),
+            }),
+        )
+
+        self.windtracker_y_spinbox_1.valueChanged.connect(
+            lambda: self.__set_value("windtracker_region_1", {
+                "x": self.windtracker_x_spinbox_1.value(),
+                "y": self.windtracker_y_spinbox_1.value(),
+                "width": self.windtracker_width_spinbox_1.value(),
+                "height": self.windtracker_height_spinbox_1.value(),
+            }),
+        )
+
+        self.windtracker_width_spinbox_1.valueChanged.connect(
+            lambda: self.__set_value("windtracker_region_1", {
+                "x": self.windtracker_x_spinbox_1.value(),
+                "y": self.windtracker_y_spinbox_1.value(),
+                "width": self.windtracker_width_spinbox_1.value(),
+                "height": self.windtracker_height_spinbox_1.value(),
+            }),
+        )
+
+        self.windtracker_height_spinbox_1.valueChanged.connect(
+            lambda: self.__set_value("windtracker_region_1", {
+                "x": self.windtracker_x_spinbox_1.value(),
+                "y": self.windtracker_y_spinbox_1.value(),
+                "width": self.windtracker_width_spinbox_1.value(),
+                "height": self.windtracker_height_spinbox_1.value(),
+            }),
+        )
+
+        self.windtracker_x_spinbox_2.valueChanged.connect(
+            lambda: self.__set_value("windtracker_region_2", {
+                "x": self.windtracker_x_spinbox_2.value(),
+                "y": self.windtracker_y_spinbox_2.value(),
+                "width": self.windtracker_width_spinbox_2.value(),
+                "height": self.windtracker_height_spinbox_2.value(),
+            }),
+        )
+
+        self.windtracker_y_spinbox_2.valueChanged.connect(
+            lambda: self.__set_value("windtracker_region_2", {
+                "x": self.windtracker_x_spinbox_2.value(),
+                "y": self.windtracker_y_spinbox_2.value(),
+                "width": self.windtracker_width_spinbox_2.value(),
+                "height": self.windtracker_height_spinbox_2.value(),
+            }),
+        )
+
+        self.windtracker_width_spinbox_2.valueChanged.connect(
+            lambda: self.__set_value("windtracker_region_2", {
+                "x": self.windtracker_x_spinbox_2.value(),
+                "y": self.windtracker_y_spinbox_2.value(),
+                "width": self.windtracker_width_spinbox_2.value(),
+                "height": self.windtracker_height_spinbox_2.value(),
+            }),
+        )
+
+        self.windtracker_height_spinbox_2.valueChanged.connect(
+            lambda: self.__set_value("windtracker_region_2", {
+                "x": self.windtracker_x_spinbox_2.value(),
+                "y": self.windtracker_y_spinbox_2.value(),
+                "width": self.windtracker_width_spinbox_2.value(),
+                "height": self.windtracker_height_spinbox_2.value(),
+            }),
+        )
+
+
+
+
+
 
 
 
@@ -452,6 +557,11 @@ def get_default_settings_from_ui(autosplit: AutoSplit):
 
 
         "windtracker_mode": default_settings_dialog.windtracker_mode_checkbox.isChecked(),
+
+
+        "windtracker_mph": default_settings_dialog.windtracker_mph_checkbox.isChecked(),
+
+
         # "windtracker_image_directory": default_settings_dialog.windtracker_image_folder_input.text(),
         "windtracker_speed_image_directory": default_settings_dialog.windtracker_speed_image_folder_input.text(),
         "windtracker_direction_image_directory": default_settings_dialog.windtracker_direction_image_folder_input.text(),
@@ -466,6 +576,27 @@ def get_default_settings_from_ui(autosplit: AutoSplit):
             "width": autosplit.width_spinbox.value(),
             "height": autosplit.height_spinbox.value(),
         },
+
+
+
+
+        "windtracker_region_1": {
+            "x": default_settings_dialog.windtracker_x_spinbox_1.value(),
+            "y": default_settings_dialog.windtracker_y_spinbox_1.value(),
+            "width": default_settings_dialog.windtracker_width_spinbox_1.value(),
+            "height": default_settings_dialog.windtracker_height_spinbox_1.value(),
+        },
+        "windtracker_region_2": {
+            "x": default_settings_dialog.windtracker_x_spinbox_2.value(),
+            "y": default_settings_dialog.windtracker_y_spinbox_2.value(),
+            "width": default_settings_dialog.windtracker_width_spinbox_2.value(),
+            "height": default_settings_dialog.windtracker_height_spinbox_2.value(),
+        },
+
+
+
+
+
     }
     del temp_dialog
     return default_settings
