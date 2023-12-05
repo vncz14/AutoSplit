@@ -172,7 +172,7 @@ def __pop_image_type(split_image: list[AutoSplitImage], image_type: ImageType):
     return None
 
 
-def parse_and_validate_images(autosplit: AutoSplit, dir: str | None = None):
+def parse_and_validate_images(autosplit: "AutoSplit", dir: str | None = None):
 
 
 

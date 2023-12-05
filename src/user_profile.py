@@ -166,7 +166,7 @@ def __load_settings_from_file(autosplit: "AutoSplit", load_settings_file_path: s
         autosplit.y_spinbox.setValue(autosplit.settings_dict["capture_region"]["y"])
         autosplit.width_spinbox.setValue(autosplit.settings_dict["capture_region"]["width"])
         autosplit.height_spinbox.setValue(autosplit.settings_dict["capture_region"]["height"])
-        
+
         autosplit.split_image_folder_input.setText(autosplit.settings_dict["split_image_directory"])
 
 
@@ -194,7 +194,7 @@ def __load_settings_from_file(autosplit: "AutoSplit", load_settings_file_path: s
     return True
 
 
-def load_settings(autosplit: AutoSplit, from_path: str = ""):
+def load_settings(autosplit: "AutoSplit", from_path: str = ""):
     load_settings_file_path = (
         from_path
         or QtWidgets.QFileDialog.getOpenFileName(
