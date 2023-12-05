@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import ctypes
 import ctypes.wintypes
 from typing import TYPE_CHECKING, cast
@@ -16,7 +14,6 @@ from capture_method.CaptureMethodBase import CaptureMethodBase
 from utils import BGRA_CHANNEL_COUNT, get_window_bounds, is_valid_hwnd, try_delete_dc
 
 if TYPE_CHECKING:
-
     from AutoSplit import AutoSplit
 
 # This is an undocumented nFlag value for PrintWindow
@@ -80,7 +77,7 @@ class BitBltCaptureMethod(CaptureMethodBase):
         return image, False
 
     @override
-    def recover_window(self, captured_window_title: str, autosplit: AutoSplit):
+    def recover_window(self, captured_window_title: str, autosplit: "AutoSplit"):
         hwnd = win32gui.FindWindow(None, captured_window_title)
         if not is_valid_hwnd(hwnd):
             return False

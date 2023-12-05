@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import os
 from typing import TYPE_CHECKING, TypedDict, cast
 
@@ -40,11 +38,7 @@ class UserProfileDict(TypedDict):
 
 
     windtracker_mode: bool
-
-
     windtracker_mph: bool
-
-
     windtracker_speed_image_directory: str
     windtracker_direction_image_directory: str
 
@@ -55,6 +49,7 @@ class UserProfileDict(TypedDict):
     open_screenshot: bool
     captured_window_title: str
     capture_region: Region
+
 
 
 
@@ -86,13 +81,7 @@ DEFAULT_PROFILE = UserProfileDict(
 
 
     windtracker_mode = True,
-
-
     windtracker_mph = True,
-
-
-
-    # windtracker_image_directory = "",
     windtracker_speed_image_directory = "",
     windtracker_direction_image_directory = "",
 
@@ -112,18 +101,23 @@ DEFAULT_PROFILE = UserProfileDict(
 )
 
 
-def have_settings_changed(autosplit: AutoSplit):
-    return autosplit.settings_dict not in (autosplit.last_loaded_settings, autosplit.last_saved_settings)
+def have_settings_changed(autosplit: "AutoSplit"):
+    return (
+        autosplit.settings_dict != autosplit.last_saved_settings
+        or autosplit.settings_dict != autosplit.last_loaded_settings
+    )
 
 
-def save_settings(autosplit: AutoSplit):
+def save_settings(autosplit: "AutoSplit"):
     """@return: The save settings filepath. Or None if "Save Settings As" is cancelled."""
-    return __save_settings_to_file(autosplit, autosplit.last_successfully_loaded_settings_file_path) \
-        if autosplit.last_successfully_loaded_settings_file_path \
+    return (
+        __save_settings_to_file(autosplit, autosplit.last_successfully_loaded_settings_file_path)
+        if autosplit.last_successfully_loaded_settings_file_path
         else save_settings_as(autosplit)
+    )
 
 
-def save_settings_as(autosplit: AutoSplit):
+def save_settings_as(autosplit: "AutoSplit"):
     """@return: The save settings filepath selected. Empty if cancelled."""
     # User picks save destination
     save_settings_file_path = QtWidgets.QFileDialog.getSaveFileName(
@@ -140,7 +134,7 @@ def save_settings_as(autosplit: AutoSplit):
     return __save_settings_to_file(autosplit, save_settings_file_path)
 
 
-def __save_settings_to_file(autosplit: AutoSplit, save_settings_file_path: str):
+def __save_settings_to_file(autosplit: "AutoSplit", save_settings_file_path: str):
     autosplit.last_saved_settings = autosplit.settings_dict
     # Save settings to a .toml file
     with open(save_settings_file_path, "w", encoding="utf-8") as file:
@@ -149,7 +143,7 @@ def __save_settings_to_file(autosplit: AutoSplit, save_settings_file_path: str):
     return save_settings_file_path
 
 
-def __load_settings_from_file(autosplit: AutoSplit, load_settings_file_path: str):
+def __load_settings_from_file(autosplit: "AutoSplit", load_settings_file_path: str):
     if load_settings_file_path.endswith(".pkl"):
         autosplit.show_error_signal.emit(error_messages.old_version_settings_file)
         return False
@@ -164,37 +158,16 @@ def __load_settings_from_file(autosplit: AutoSplit, load_settings_file_path: str
                     **toml.load(file),
                 },
             )
-            # TODO: Data Validation / fallbacks ?
-            autosplit.settings_dict = UserProfileDict(**loaded_settings)  # type: ignore[misc]
-            autosplit.last_loaded_settings = autosplit.settings_dict
+        # TODO: Data Validation / fallbacks ?
+        autosplit.settings_dict = UserProfileDict(**loaded_settings)  # type: ignore[misc]
+        autosplit.last_loaded_settings = autosplit.settings_dict
 
-            autosplit.x_spinbox.setValue(autosplit.settings_dict["capture_region"]["x"])
-            autosplit.y_spinbox.setValue(autosplit.settings_dict["capture_region"]["y"])
-            autosplit.width_spinbox.setValue(autosplit.settings_dict["capture_region"]["width"])
-            autosplit.height_spinbox.setValue(autosplit.settings_dict["capture_region"]["height"])
-
-
-
-
-
-
-            # autosplit.windtracker_x_spinbox_1.setValue(autosplit.settings_dict["windtracker_region_1"]["x"])
-            # autosplit.windtracker_y_spinbox_1.setValue(autosplit.settings_dict["windtracker_region_1"]["y"])
-            # autosplit.windtracker_width_spinbox_1.setValue(autosplit.settings_dict["windtracker_region_1"]["width"])
-            # autosplit.windtracker_height_spinbox_1.setValue(autosplit.settings_dict["windtracker_region_1"]["height"])
-
-            # autosplit.windtracker_x_spinbox_2.setValue(autosplit.settings_dict["windtracker_region_2"]["x"])
-            # autosplit.windtracker_y_spinbox_2.setValue(autosplit.settings_dict["windtracker_region_2"]["y"])
-            # autosplit.windtracker_width_spinbox_2.setValue(autosplit.settings_dict["windtracker_region_2"]["width"])
-            # autosplit.windtracker_height_spinbox_2.setValue(autosplit.settings_dict["windtracker_region_2"]["height"])
-
-
-
-
-
-
-
-            autosplit.split_image_folder_input.setText(autosplit.settings_dict["split_image_directory"])
+        autosplit.x_spinbox.setValue(autosplit.settings_dict["capture_region"]["x"])
+        autosplit.y_spinbox.setValue(autosplit.settings_dict["capture_region"]["y"])
+        autosplit.width_spinbox.setValue(autosplit.settings_dict["capture_region"]["width"])
+        autosplit.height_spinbox.setValue(autosplit.settings_dict["capture_region"]["height"])
+        
+        autosplit.split_image_folder_input.setText(autosplit.settings_dict["split_image_directory"])
 
 
     except (FileNotFoundError, MemoryError, TypeError, toml.TomlDecodeError):
@@ -204,7 +177,7 @@ def __load_settings_from_file(autosplit: AutoSplit, load_settings_file_path: str
     remove_all_hotkeys()
     if not autosplit.is_auto_controlled:
         for hotkey, hotkey_name in [(hotkey, f"{hotkey}_hotkey") for hotkey in HOTKEYS]:
-            hotkey_value = cast(str, autosplit.settings_dict[hotkey_name])  # pyright: ignore[reportGeneralTypeIssues]
+            hotkey_value = autosplit.settings_dict.get(hotkey_name)
             if hotkey_value:
                 set_hotkey(autosplit, hotkey, hotkey_value)
 
@@ -222,12 +195,15 @@ def __load_settings_from_file(autosplit: AutoSplit, load_settings_file_path: str
 
 
 def load_settings(autosplit: AutoSplit, from_path: str = ""):
-    load_settings_file_path = from_path or QtWidgets.QFileDialog.getOpenFileName(
-        autosplit,
-        "Load Profile",
-        os.path.join(auto_split_directory, "settings.toml"),
-        "TOML (*.toml)",
-    )[0]
+    load_settings_file_path = (
+        from_path
+        or QtWidgets.QFileDialog.getOpenFileName(
+            autosplit,
+            "Load Profile",
+            os.path.join(auto_split_directory, "settings.toml"),
+            "TOML (*.toml)",
+        )[0]
+    )
     if not (load_settings_file_path and __load_settings_from_file(autosplit, load_settings_file_path)):
         return
 
@@ -237,7 +213,7 @@ def load_settings(autosplit: AutoSplit, from_path: str = ""):
         autosplit.load_start_image_signal.emit(False, True)
 
 
-def load_settings_on_open(autosplit: AutoSplit):
+def load_settings_on_open(autosplit: "AutoSplit"):
     settings_files = [
         file for file
         in os.listdir(auto_split_directory)
@@ -258,7 +234,7 @@ def load_settings_on_open(autosplit: AutoSplit):
     load_settings(autosplit, os.path.join(auto_split_directory, settings_files[0]))
 
 
-def load_check_for_updates_on_open(autosplit: AutoSplit):
+def load_check_for_updates_on_open(autosplit: "AutoSplit"):
     """
     Retrieve the "Check For Updates On Open" QSettings and set the checkbox state
     These are only global settings values. They are not *toml settings values.
