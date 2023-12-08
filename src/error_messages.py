@@ -16,8 +16,11 @@ if TYPE_CHECKING:
 
 def __exit_program():
     # stop main thread (which is probably blocked reading input) via an interrupt signal
+
     os.kill(os.getpid(), signal.SIGINT)
     sys.exit(1)
+
+    # pass
 
 
 def set_text_message(message: str, details: str = "", kill_button: str = "", accept_button: str = ""):
@@ -30,7 +33,7 @@ def set_text_message(message: str, details: str = "", kill_button: str = "", acc
         message_box.addButton(accept_button, QtWidgets.QMessageBox.ButtonRole.AcceptRole)
     if kill_button:
         force_quit_button = message_box.addButton(kill_button, QtWidgets.QMessageBox.ButtonRole.ResetRole)
-        force_quit_button.clicked.connect(__exit_program)
+        # force_quit_button.clicked.connect(__exit_program)
     if details:
         message_box.setDetailedText(details)
         # Preopen the details

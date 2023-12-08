@@ -99,7 +99,7 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         self.is_running = False
 
 
-
+        self.possible_speed_and_similarity: tuple[int, float] = (0, 0.0)
         self.found_wind = False
 
 
@@ -126,6 +126,9 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
 
         self.windtracker_speed_images: list[AutoSplitImage] = []
         self.windtracker_direction_images: list[AutoSplitImage] = []
+
+        self.windtracker_speeds_left = [i for i in range(0, 11)]
+        self.windtracker_directions_left = [i for i in range(0, 8)]
 
 
 
@@ -505,10 +508,10 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
         self.is_running = False
 
 
-
-
-
         self.found_wind = False
+        self.windtracker_speeds_left = [i for i in range(0, 11)]
+        self.windtracker_directions_left = [i for i in range(0, 8)]
+
 
     # Functions for the hotkeys to return to the main thread from signals and start their corresponding functions
     def start_auto_splitter(self):
@@ -739,46 +742,59 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
 
 
 
-                elif self.settings_dict["windtracker_mode"] and not self.found_wind:
+                elif self.settings_dict["windtracker_mode"] and not self.found_wind and self.split_image_number != 0:
 
                     if self.__reset_if_should(capture):
                         return True
 
-                    # for every image in the wind folder, check similarity. if its enough, then return the image file name
-                    # possible optimization: first check colors for speed, then check arrow direction for direction
-
                     capture_1, _ = self.__get_capture_for_comparison("windtracker_region_1")
                     capture_2, _ = self.__get_capture_for_comparison("windtracker_region_2")
 
-                    # print(capture_1, capture_2)
-
+                    speeds_left = len(self.windtracker_speeds_left)
 
                     speed_similarity_array = []
+                    speed_similarity_array += [self.windtracker_speed_images[speed].compare_with_capture(self, capture_1) for speed in self.windtracker_speeds_left]
+                    speed_similarity_array += [self.windtracker_speed_images[speed].compare_with_capture(self, capture_2) for speed in self.windtracker_speeds_left]
 
-                    for speed_image in self.windtracker_speed_images:
-                        speed_similarity_array.append(speed_image.compare_with_capture(self, capture_1))
-                    for speed_image in self.windtracker_speed_images:
-                        speed_similarity_array.append(speed_image.compare_with_capture(self, capture_2))
+                    #index of max similarity, and max similarity
+                    our_reading = (speed_similarity_array.index(max(speed_similarity_array)), max(speed_similarity_array))
+
+                    print(our_reading) if our_reading[1] != 0.0 else None
+
+                    # similarity needs to be above 0.15
+                    # speed needs to be the same as the last reading
+                    # similarity needs to be within 0.02 of the last reading
+
+                    if our_reading[1] > 0.15 and our_reading[0] == self.possible_speed_and_similarity[0] and abs(our_reading[1] -self.possible_speed_and_similarity[1] < 0.02):
+
+                        direction_number = None
+
+                        max_index = our_reading[0]
+
+                        if 0 in self.windtracker_speeds_left and (max_index == 0 or max_index == speeds_left): # if 0 wind
+                            speed = 0
+                            # _send_hotkey("0") # just send a 0 key press and let user input direction manually
 
 
-                    if max(speed_similarity_array) > 0.08:
+                        else:
 
 
-                        speed = speed_similarity_array.index(max(speed_similarity_array)) % 16
+                            capture = capture_1 if max_index < speeds_left else capture_2
 
-                        if speed != 0:
+
+                            print("max_index =", max_index)
+                            print("speeds_left =", speeds_left)
+                            print(self.windtracker_speeds_left)
+
+                            speed = self.windtracker_speeds_left[max_index % speeds_left]
+                            print("speed =", speed)
+
 
                             direction_similarity_array = []
+                            direction_similarity_array += [self.windtracker_direction_images[direction_num].compare_with_capture(self, capture) for direction_num in self.windtracker_directions_left]
 
 
-                            capture = capture_1 if speed_similarity_array.index(max(speed_similarity_array)) < 16 else capture_2
-
-                            for direction_image in self.windtracker_direction_images:
-
-                                direction_similarity_array.append(direction_image.compare_with_capture(self, capture))
-
-
-                            direction_number = direction_similarity_array.index(max(direction_similarity_array))
+                            direction_number = self.windtracker_directions_left[direction_similarity_array.index(max(direction_similarity_array))]
 
                             match direction_number:
 
@@ -791,28 +807,52 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
                                 case 6: direction = "SW"
                                 case 7: direction = "W"
 
-                        else:
-
-                            direction = "?"
+                                case _: direction = ""
 
 
-                        if self.settings_dict["windtracker_mph"]:
-                            speed *= 2
-
-
-                        # tuple containing the characters of speed and direction, then enter
-                        for char in f"{speed}{direction}":
-                            _send_hotkey(char)
-                        _send_hotkey("enter")
+                            # for char in f"{speed*2 if self.settings_dict["windtracker_mph" else speed]}{direction}":
+                            #     _send_hotkey(char)
+                            # _send_hotkey("enter")
 
 
 
                         self.found_wind = True
+                        self.possible_speed_and_similarity = (0, 0.0)
 
 
 
 
+                        print("speed=", speed)
 
+
+
+                        # TODO: add toggle for wind rules. should be easy: just add a setting and then put an if statement on this whole chunk
+
+                        self.windtracker_speeds_left.remove(speed)
+                        if direction_number != None:
+                            print("direction= ", direction_number)
+                            self.windtracker_directions_left.remove(direction_number)
+
+                        print(self.windtracker_speeds_left)
+                        print(self.windtracker_directions_left)
+
+                        print("split image number =", self.split_image_number)
+
+                        # if we ran out of speeds
+                        if self.split_image_number % 9 == 0:
+                            print('hi')
+                            self.windtracker_speeds_left == [i for i in range(0, 11)]
+
+                        # if we ran out of directions
+                        if self.split_image_number % 8 == 0:
+                            print('hey')
+                            self.windtracker_directions_left = [i for i in range(0, 8)]
+
+
+
+                    else:
+
+                        self.possible_speed_and_similarity = our_reading
 
             QTest.qWait(wait_delta_ms)
 
