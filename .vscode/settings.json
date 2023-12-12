@@ -21,9 +21,8 @@
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    // Let dedicated linter (Ruff) organize imports
-    "source.organizeImports": false,
+    "source.fixAll": "explicit",
+    "source.organizeImports": "never"
   },
   "emeraldwalk.runonsave": {
     "commands": [

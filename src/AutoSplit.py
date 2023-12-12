@@ -756,6 +756,8 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
                     speed_similarity_array += [self.windtracker_speed_images[speed].compare_with_capture(self, capture_1) for speed in self.windtracker_speeds_left]
                     speed_similarity_array += [self.windtracker_speed_images[speed].compare_with_capture(self, capture_2) for speed in self.windtracker_speeds_left]
 
+                    print(speed_similarity_array)
+
                     #index of max similarity, and max similarity
                     our_reading = (speed_similarity_array.index(max(speed_similarity_array)), max(speed_similarity_array))
 
@@ -773,7 +775,7 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
 
                         if 0 in self.windtracker_speeds_left and (max_index == 0 or max_index == speeds_left): # if 0 wind
                             speed = 0
-                            # _send_hotkey("0") # just send a 0 key press and let user input direction manually
+                            _send_hotkey("0") # just send a 0 key press and let user input direction manually
 
 
                         else:
@@ -782,17 +784,18 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
                             capture = capture_1 if max_index < speeds_left else capture_2
 
 
-                            print("max_index =", max_index)
-                            print("speeds_left =", speeds_left)
-                            print(self.windtracker_speeds_left)
+                            # print("max_index =", max_index)
+                            # print("speeds_left =", speeds_left)
+                            # print(self.windtracker_speeds_left)
 
                             speed = self.windtracker_speeds_left[max_index % speeds_left]
-                            print("speed =", speed)
+                            # print("speed =", speed)
 
 
                             direction_similarity_array = []
                             direction_similarity_array += [self.windtracker_direction_images[direction_num].compare_with_capture(self, capture) for direction_num in self.windtracker_directions_left]
 
+                            print(direction_similarity_array)
 
                             direction_number = self.windtracker_directions_left[direction_similarity_array.index(max(direction_similarity_array))]
 
@@ -810,9 +813,9 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
                                 case _: direction = ""
 
 
-                            # for char in f"{speed*2 if self.settings_dict["windtracker_mph" else speed]}{direction}":
-                            #     _send_hotkey(char)
-                            # _send_hotkey("enter")
+                            for char in f"{speed*2 if self.settings_dict['windtracker_mph'] else speed}{direction}":
+                                _send_hotkey(char)
+                            _send_hotkey("enter")
 
 
 
@@ -823,30 +826,29 @@ class AutoSplit(QMainWindow, design.Ui_MainWindow):
 
 
                         print("speed=", speed)
+                        print("direction= ", direction_number)
 
 
 
-                        # TODO: add toggle for wind rules. should be easy: just add a setting and then put an if statement on this whole chunk
 
-                        self.windtracker_speeds_left.remove(speed)
-                        if direction_number != None:
-                            print("direction= ", direction_number)
-                            self.windtracker_directions_left.remove(direction_number)
+                        if self.settings_dict["windtracker_follow_wind_rules"]:
 
-                        print(self.windtracker_speeds_left)
-                        print(self.windtracker_directions_left)
+                            self.windtracker_speeds_left.remove(speed)
+                            if direction_number != None:
+                                self.windtracker_directions_left.remove(direction_number)
 
-                        print("split image number =", self.split_image_number)
+                            print(self.windtracker_speeds_left)
+                            print(self.windtracker_directions_left)
 
-                        # if we ran out of speeds
-                        if self.split_image_number % 9 == 0:
-                            print('hi')
-                            self.windtracker_speeds_left == [i for i in range(0, 11)]
+                            # print("split image number =", self.split_image_number)
 
-                        # if we ran out of directions
-                        if self.split_image_number % 8 == 0:
-                            print('hey')
-                            self.windtracker_directions_left = [i for i in range(0, 8)]
+                            # if we ran out of speeds
+                            if self.split_image_number % 9 == 0:
+                                self.windtracker_speeds_left = [i for i in range(0, 11)]
+
+                            # if we ran out of directions
+                            if self.split_image_number % 8 == 0:
+                                self.windtracker_directions_left = [i for i in range(0, 8)]
 
 
 

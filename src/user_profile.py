@@ -39,6 +39,7 @@ class UserProfileDict(TypedDict):
 
     windtracker_mode: bool
     windtracker_mph: bool
+    windtracker_follow_wind_rules: bool
     windtracker_speed_image_directory: str
     windtracker_direction_image_directory: str
 
@@ -82,6 +83,7 @@ DEFAULT_PROFILE = UserProfileDict(
 
     windtracker_mode = True,
     windtracker_mph = True,
+    windtracker_follow_wind_rules = False,
     windtracker_speed_image_directory = "",
     windtracker_direction_image_directory = "",
 

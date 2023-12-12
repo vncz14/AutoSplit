@@ -332,6 +332,7 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
         #windtracker settings
         self.windtracker_mode_checkbox.setChecked(self.autosplit.settings_dict["windtracker_mode"])
         self.windtracker_mph_checkbox.setChecked(self.autosplit.settings_dict["windtracker_mph"])
+        self.windtracker_follow_wind_rules_checkbox.setChecked(self.autosplit.settings_dict["windtracker_follow_wind_rules"])
 
 
 
@@ -420,6 +421,9 @@ class __SettingsWidget(QtWidgets.QWidget, settings_ui.Ui_SettingsWidget):  # noq
 
         self.windtracker_mph_checkbox.stateChanged.connect(
             lambda: self.__set_value("windtracker_mph", self.windtracker_mph_checkbox.isChecked()),
+        )
+        self.windtracker_follow_wind_rules_checkbox.stateChanged.connect(
+            lambda: self.__set_value("windtracker_follow_wind_rules", self.windtracker_follow_wind_rules_checkbox.isChecked()),
         )
 
 
@@ -551,9 +555,9 @@ def get_default_settings_from_ui(autosplit: "AutoSplit"):
 
 
         "windtracker_mode": default_settings_dialog.windtracker_mode_checkbox.isChecked(),
-
-
         "windtracker_mph": default_settings_dialog.windtracker_mph_checkbox.isChecked(),
+        "windtracker_follow_wind_rules": default_settings_dialog.windtracker_follow_wind_rules_checkbox.isChecked(),
+
 
 
         # "windtracker_image_directory": default_settings_dialog.windtracker_image_folder_input.text(),
